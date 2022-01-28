@@ -80,7 +80,7 @@ struct ContentView: View {
                             .cornerRadius(button_corner_radius)
                     })
                     Button(action: {
-                        
+                        convertPercentage()
                     }, label: {
                         Text("%")
                             .font(.system(size: button_text_size))
@@ -360,7 +360,7 @@ struct ContentView: View {
             currentInput = ""
         }
         
-        if(currentInput.count >= 9) {
+        if(currentInput.count > 9) {
             // do not allow any larger numbers to prevent integer overflow
             // print("Count limit exceeded")
             return;
@@ -425,7 +425,23 @@ struct ContentView: View {
         }
     }
     
-    
+    func convertPercentage() {
+        let lastIndex = currentInput.index(currentInput.endIndex, offsetBy: -1)
+        if(currentInput[lastIndex] == ".") {
+            return
+        }
+        if(currentInput == "0" || currentInput.count > 9) {
+            return
+        }
+        var result = Double(currentInput) ?? 0
+        result = result / 100
+        currentInput = String(result)
+        // if the first operand was already set before percentage (operator button pressed before percentage)
+        // then change firstOperand
+        if(isMultiplyActive == true || isDivideActive == true || isAddActive == true || isSubtractActive == true) {
+            firstOperand = currentInput
+        }
+    }
     
     // when the result button is pressed
     func calculateResult() {
